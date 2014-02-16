@@ -11,10 +11,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   # Every Vagrant virtual environment requires a box to build off of.
   config.vm.box = "aws-dummy"
+  config.omnibus.chef_version = :latest
 
   config.vm.provider :aws do |aws, override|
-    aws.access_key_id     = ENV['AWS_ACCESS_KEY']
-    aws.secret_access_key = ENV['AWS_SECRET_KEY']
+    aws.access_key_id     = ENV['ACCESS_KEY_ID']
+    aws.secret_access_key = ENV['SECRET_ACCESS_KEY']
     aws.keypair_name = "dev_rmaccho"
     aws.instance_type = "t1.micro"
     aws.region = "ap-northeast-1"
@@ -28,6 +29,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     override.ssh.private_key_path = "~/.ssh/dev_rmaccho.pem"
   end
 
+  config.vm.provision :chef_solo do |chef|
+    chef.add_recipe "sandbox"
+  end
+  
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.
   # config.vm.box_url = "http://domain.com/path/to/above.box"
